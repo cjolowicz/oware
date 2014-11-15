@@ -1,5 +1,7 @@
-HEADERS = Position.hpp Engine.hpp Driver.hpp
+HEADERS = Position.hpp Engine.hpp Driver.hpp Debug.hpp
 OBJECTS = main.o Position.o Engine.o Driver.o
+
+CXXFLAGS += -Wall
 
 all: oware
 

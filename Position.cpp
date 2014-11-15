@@ -97,8 +97,6 @@ bool Position::move_unsafe(Field field)
         }
     }
 
-    count_t previous_score = score();
-
     while (field.player == opponent())
     {
         count_t& current = count(field);

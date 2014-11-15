@@ -1,5 +1,6 @@
 #include "Driver.hpp"
 #include "Engine.hpp"
+#include "Debug.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -187,6 +188,8 @@ Position move_agent(const Position& position)
         if (next.second)
         {
             float value = negamax(next.first, MAX_DEPTH);
+
+            DEBUG("move #%d: %3d%%\n", (int)first.index, (int)(100 * value));
 
             if (value > best.second)
             {
