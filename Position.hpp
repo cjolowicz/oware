@@ -1,3 +1,6 @@
+#ifndef POSITION_HPP
+#define POSITION_HPP
+
 #include <algorithm>
 #include <utility>
 
@@ -218,3 +221,5 @@ private:
 
 float evaluate(const Position& position);
 float negamax(const Position& position, unsigned int depth);
+
+#endif
