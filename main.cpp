@@ -217,6 +217,7 @@ int main()
 
     do
     {
+        system("clear");
         print(position);
 
         if (position.player() == human)
