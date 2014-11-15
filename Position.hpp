@@ -7,6 +7,7 @@
 typedef unsigned char count_t; // 0 to 48
 
 extern const count_t INITIAL_COUNT;
+extern const count_t WIN_COUNT;
 
 enum Player
 {
@@ -218,8 +219,5 @@ private:
     Player m_player;
     Board m_board;
 };
-
-float evaluate(const Position& position);
-float negamax(const Position& position, unsigned int depth);
 
 #endif
