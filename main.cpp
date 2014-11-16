@@ -1,11 +1,10 @@
 #include "Driver.hpp"
 
+#include <string>
 #include <stdlib.h>
 
-int main()
+void human_vs_agent(Player human)
 {
-    Player human = read_player();
-
     system("clear");
 
     Position position;
@@ -31,6 +30,71 @@ int main()
     while (!position.is_terminal());
 
     print(position);
+}
+
+void human_vs_human()
+{
+    Position position;
+
+    do
+    {
+        system("clear");
+
+        print(position);
+
+        position = move_human(position);
+    }
+    while (!position.is_terminal());
+
+    print(position);
+}
+
+void agent_vs_agent()
+{
+    Position position;
+
+    do
+    {
+        print(position);
+
+        position = move_agent(position);
+    }
+    while (!position.is_terminal());
+
+    print(position);
+}
+
+int main(int argc, const char* argv[])
+{
+    if (argc > 1)
+    {
+        std::string arg(argv[1]);
+
+        if (arg == "hh")
+        {
+            human_vs_human();
+        }
+        else if (arg == "ha" || arg == "ah")
+        {
+            Player human = read_player();
+
+            human_vs_agent(human);
+        }
+        else if (arg == "aa")
+        {
+            agent_vs_agent();
+        }
+        else
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        Player human = read_player();
+
+        human_vs_agent(human);
+    }
 
     return 0;
 }
