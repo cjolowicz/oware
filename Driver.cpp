@@ -93,6 +93,7 @@ void print(const Position& position)
 
     printf("\n");
     printf("\n");
+    fflush(stdout);
 }
 
 void print_move(Field move)
@@ -175,6 +176,8 @@ Position move_human(const Position& position)
 
 Position move_agent(const Position& position)
 {
+    DEBUG("current: %3.2f%%", 100 * evaluate(position));
+
     Field first = position.begin();
     Field last = position.end();
 
@@ -189,7 +192,7 @@ Position move_agent(const Position& position)
         {
             float value = negamax(next.first, MAX_DEPTH);
 
-            DEBUG("move #%d: %3d%%\n", (int)first.index, (int)(100 * value));
+            DEBUG("move #%d: %3.2f%%", (int)first.index+1, 100 * value);
 
             if (value > best.second)
             {

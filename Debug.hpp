@@ -9,6 +9,7 @@
         fprintf(stderr, "[DEBUG] ");            \
         fprintf(stderr, __VA_ARGS__);           \
         fprintf(stderr, "\n");                  \
+        fflush(stderr);                         \
     }                                           \
     while (false)
 #else
