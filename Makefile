@@ -1,9 +1,13 @@
-HEADERS = Position.hpp Engine.hpp Driver.hpp Debug.hpp
-OBJECTS = main.o Position.o Engine.o Driver.o
+HEADERS = Position.hpp Engine.hpp Driver.hpp Debug.hpp Singleton.hpp
+OBJECTS = Position.o Engine.o Driver.o
+
+TEST_HEADERS = TestCase.hpp TestSuite.hpp
+TEST_OBJECTS = TestCase.o TestSuite.o
+TESTS = TestPosition
 
 CXXFLAGS += -Wall
 
-all: oware
+all: oware $(TESTS)
 
 main.o: main.cpp $(HEADERS)
 
@@ -13,8 +17,17 @@ Engine.o: Engine.cpp $(HEADERS)
 
 Driver.o: Driver.cpp $(HEADERS)
 
-oware: $(OBJECTS)
-	$(CXX) -o $@ $(OBJECTS)
+TestCase.o: TestCase.cpp $(TEST_HEADERS) $(HEADERS)
+
+TestSuite.o: TestSuite.cpp $(TEST_HEADERS) $(HEADERS)
+
+oware: main.o $(OBJECTS)
+	$(CXX) -o $@ main.o $(OBJECTS)
+
+TestPosition.o: TestPosition.cpp $(TEST_HEADERS) $(HEADERS)
+
+TestPosition: TestPosition.o $(TEST_OBJECTS) $(OBJECTS)
+	$(CXX) -o $@ TestPosition.o $(TEST_OBJECTS) $(OBJECTS)
 
 clean:
-	rm -f $(OBJECTS) oware
+	rm -f oware $(OBJECTS) $(TEST_OBJECTS) $(TESTS)
