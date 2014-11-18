@@ -1,4 +1,23 @@
 #include "TestSuite.hpp"
+#include "Exception.hpp"
+
+#include <stdio.h>
+
+TestSuite::TestSuite()
+    : m_testcases()
+{
+}
+
+TestSuite::~TestSuite()
+{
+    std::vector<TestCase*>::iterator testcase;
+
+    for (testcase = m_testcases.begin();
+         testcase != m_testcases.end(); ++testcase)
+    {
+        delete *testcase;
+    }
+}
 
 void TestSuite::add(TestCase* testcase)
 {
@@ -7,14 +26,7 @@ void TestSuite::add(TestCase* testcase)
 
 int TestSuite::run(int argc, const char* argv[])
 {
-    try
-    {
-        instance().runTestCases();
-    }
-    catch (...)
-    {
-        return 1;
-    }
+    instance().runTestCases();
 
     return 0;
 }
@@ -26,17 +38,22 @@ void TestSuite::runTestCases()
     for (testcase = m_testcases.begin();
          testcase != m_testcases.end(); ++testcase)
     {
-        (**testcase).run();
+        runTestCase(**testcase);
     }
 }
 
-TestSuite::~TestSuite()
+void TestSuite::runTestCase(TestCase& testcase)
 {
-    std::vector<TestCase*>::iterator testcase;
-
-    for (testcase = m_testcases.begin();
-         testcase != m_testcases.end(); ++testcase)
+    try
     {
-        delete *testcase;
+        testcase.run();
+
+        fprintf(stdout, "PASS: %s\n", testcase.name().c_str());
+    }
+    catch (const Exception& exception)
+    {
+        fprintf(stdout, "FAIL: %s\n", testcase.name().c_str());
+
+        fprintf(stderr, "%s\n", exception.what());
     }
 }

@@ -3,3 +3,4 @@ syntax: glob
 ./oware
 *.log
 TestPosition
+TestString

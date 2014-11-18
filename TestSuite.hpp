@@ -12,6 +12,7 @@ public:
     static void add(TestCase* testcase);
     static int run(int argc, const char* argv[]);
 
+    TestSuite();
     ~TestSuite();
 
     template<typename T>
@@ -27,6 +28,7 @@ public:
 
 private:
     void runTestCases();
+    void runTestCase(TestCase& testcase);
 
     std::vector<TestCase*> m_testcases;
 };
@@ -36,7 +38,7 @@ TestSuite::Add<T>
 TestSuite::Add<T>::s_add;
 
 #define ADD_TESTCASE(name) \
-    template struct TestSuite::Add<name>
+    template struct TestSuite::Add<TESTCASE_CLASS(name)>
 
 #define TEST(name)                              \
     DECLARE_TESTCASE(name);                     \

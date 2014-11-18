@@ -1,10 +1,9 @@
 #include "TestSuite.hpp"
 #include "Position.hpp"
-#include "Debug.hpp"
 
 TEST(Initial)
 {
-    DEBUG("starting test case for %s", name().c_str());
+    check_equal(1u, 2u);
 }
 
 TESTMAIN()
