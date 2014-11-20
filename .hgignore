@@ -4,3 +4,4 @@ syntax: glob
 ./oware
 ./TestPosition
 ./TestString
+./TestEngine

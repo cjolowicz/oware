@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 TestSuite::TestSuite()
-    : m_testcases()
+    : m_name(),
+      m_testcases()
 {
 }
 
@@ -17,6 +18,11 @@ TestSuite::~TestSuite()
     {
         delete *testcase;
     }
+}
+
+void TestSuite::setName(const std::string& name)
+{
+    instance().m_name = name;
 }
 
 void TestSuite::add(TestCase* testcase)
@@ -48,11 +54,17 @@ void TestSuite::runTestCase(TestCase& testcase)
     {
         testcase.run();
 
-        fprintf(stdout, "PASS: %s\n", testcase.name().c_str());
+        fprintf(stdout,
+                "PASS: %s.%s\n",
+                m_name.c_str(),
+                testcase.name().c_str());
     }
     catch (const Exception& exception)
     {
-        fprintf(stdout, "FAIL: %s\n", testcase.name().c_str());
+        fprintf(stdout,
+                "FAIL: %s.%s\n",
+                m_name.c_str(),
+                testcase.name().c_str());
 
         fprintf(stderr, "%s\n", exception.what());
     }

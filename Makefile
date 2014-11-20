@@ -4,7 +4,7 @@ OBJECTS = Position.o Engine.o Driver.o Exception.o String.o
 
 TEST_HEADERS = TestCase.hpp TestSuite.hpp
 TEST_OBJECTS = TestCase.o TestSuite.o
-TESTS = TestPosition TestString
+TESTS = TestString TestPosition TestEngine
 
 CXXFLAGS += -Wall
 
@@ -29,15 +29,20 @@ TestSuite.o: TestSuite.cpp $(TEST_HEADERS) $(HEADERS)
 oware: main.o $(OBJECTS)
 	$(CXX) -o $@ main.o $(OBJECTS)
 
+TestString.o: TestString.cpp $(TEST_HEADERS) $(HEADERS)
+
+TestString: TestString.o $(TEST_OBJECTS) $(OBJECTS)
+	$(CXX) -o $@ TestString.o $(TEST_OBJECTS) $(OBJECTS)
+
 TestPosition.o: TestPosition.cpp $(TEST_HEADERS) $(HEADERS)
 
 TestPosition: TestPosition.o $(TEST_OBJECTS) $(OBJECTS)
 	$(CXX) -o $@ TestPosition.o $(TEST_OBJECTS) $(OBJECTS)
 
-TestString.o: TestString.cpp $(TEST_HEADERS) $(HEADERS)
+TestEngine.o: TestEngine.cpp $(TEST_HEADERS) $(HEADERS)
 
-TestString: TestString.o $(TEST_OBJECTS) $(OBJECTS)
-	$(CXX) -o $@ TestString.o $(TEST_OBJECTS) $(OBJECTS)
+TestEngine: TestEngine.o $(TEST_OBJECTS) $(OBJECTS)
+	$(CXX) -o $@ TestEngine.o $(TEST_OBJECTS) $(OBJECTS)
 
 test: $(TESTS)
 	@for test in $(TESTS) ; do \
