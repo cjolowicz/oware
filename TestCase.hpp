@@ -17,24 +17,13 @@ public:
 
     void fail(const std::string& message);
 
-    template<typename T>
-    void check_equal(const T& a, const T& b);
+    void check_equal(const std::string& a, const std::string& b);
+    void check_equal(int a, int b);
+    void check_equal(unsigned int a, unsigned int b);
 
 private:
     std::string m_name;
 };
-
-template<>
-void TestCase::check_equal(const std::string& a, const std::string& b);
-
-template<typename T>
-void TestCase::check_equal(const T& a, const T& b)
-{
-    if (!(a == b))
-    {
-        fail("expected " + itostr(b) + ", but got " + itostr(a));
-    }
-}
 
 #define TESTCASE_CLASS(name) TestCase_##name
 

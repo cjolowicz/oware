@@ -19,11 +19,26 @@ void TestCase::fail(const std::string& message)
     throw Exception(name() + ": " + message, FILELINE);
 }
 
-template<>
 void TestCase::check_equal(const std::string& a, const std::string& b)
 {
     if (!(a == b))
     {
         fail("expected \"" + b + "\", but got \"" + a + "\"");
+    }
+}
+
+void TestCase::check_equal(int a, int b)
+{
+    if (!(a == b))
+    {
+        fail("expected " + itostr(b) + ", but got " + itostr(a));
+    }
+}
+
+void TestCase::check_equal(unsigned int a, unsigned int b)
+{
+    if (!(a == b))
+    {
+        fail("expected " + itostr(b) + ", but got " + itostr(a));
     }
 }

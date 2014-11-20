@@ -35,3 +35,22 @@ std::string itostr(unsigned int value)
 
     return result;
 }
+
+template<>
+std::string itostr(unsigned char value)
+{
+    return itostr<unsigned int>(value);
+}
+
+template<>
+std::string itostr(int value)
+{
+    if (value >= 0)
+    {
+        return itostr<unsigned int>(
+            static_cast<unsigned int>(value));
+    }
+
+    return "-" + itostr<unsigned int>(
+        static_cast<unsigned int>(value * -1));
+}

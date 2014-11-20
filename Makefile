@@ -39,5 +39,10 @@ TestString.o: TestString.cpp $(TEST_HEADERS) $(HEADERS)
 TestString: TestString.o $(TEST_OBJECTS) $(OBJECTS)
 	$(CXX) -o $@ TestString.o $(TEST_OBJECTS) $(OBJECTS)
 
+test: $(TESTS)
+	@for test in $(TESTS) ; do \
+	  ./$$test; \
+	done
+
 clean:
 	rm -f oware $(OBJECTS) $(TEST_OBJECTS) $(TESTS)
