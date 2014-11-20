@@ -27,6 +27,14 @@ public:
         static Add s_add;
     };
 
+    struct SetName
+    {
+        explicit SetName(const std::string& name)
+        {
+            setName(name);
+        }
+    };
+
 private:
     void runTestCases();
     void runTestCase(TestCase& testcase);
@@ -39,10 +47,22 @@ template<typename T>
 TestSuite::Add<T>
 TestSuite::Add<T>::s_add;
 
-#define TESTSUITE_NAMESPACE(name) TestSuite_##name
-
 #define ADD_TESTCASE(name) \
     template struct TestSuite::Add<TESTCASE_CLASS(name)>
+
+#define TESTSUITE_NAMESPACE(name) TestSuite_##name
+
+#define DEFINE_TESTSUITE_NAMESPACE(name) \
+    namespace TESTSUITE_NAMESPACE(name)
+
+#define SET_TESTSUITE_NAME(name) \
+    TestSuite::SetName TestSuite_SetName_##name(#name)
+
+#define DEFINE_TESTSUITE_MAIN(name)             \
+    int main(int argc, const char* argv[])      \
+    {                                           \
+        return TestSuite::run(argc, argv);      \
+    }
 
 #define TESTCASE(name)                          \
     DECLARE_TESTCASE(name);                     \
@@ -50,13 +70,8 @@ TestSuite::Add<T>::s_add;
     DEFINE_TESTCASE(name)
 
 #define TESTSUITE(name)                         \
-    int main(int argc, const char* argv[])      \
-    {                                           \
-        TestSuite::setName(#name);              \
-                                                \
-        return TestSuite::run(argc, argv);      \
-    }                                           \
-                                                \
-    namespace TESTSUITE_NAMESPACE(name)
+    DEFINE_TESTSUITE_MAIN(name)                 \
+    SET_TESTSUITE_NAME(name);                   \
+    DEFINE_TESTSUITE_NAMESPACE(name)
 
 #endif
