@@ -7,6 +7,6 @@ TESTSUITE(engine)
     {
         Position position;
 
-        check_equal((int)evaluate(position), 0);
+        check_equal(evaluate(position), 0.0);
     }
 }

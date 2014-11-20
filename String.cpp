@@ -1,4 +1,7 @@
 #include "String.hpp"
+#include "Exception.hpp"
+
+#include <stdio.h>
 
 char to_digit(unsigned int value)
 {
@@ -53,4 +56,25 @@ std::string itostr(int value)
 
     return "-" + itostr<unsigned int>(
         static_cast<unsigned int>(value * -1));
+}
+
+template<>
+std::string ftostr(float value)
+{
+    return ftostr<double>(value);
+}
+
+template<>
+std::string ftostr(double value)
+{
+    char buffer[1024];
+
+    int rv = snprintf(buffer, sizeof(buffer), "%g", value);
+
+    if (rv <= 0 || rv >= sizeof(buffer))
+    {
+        throw Exception("ftostr", FILELINE);
+    }
+
+    return buffer;
 }

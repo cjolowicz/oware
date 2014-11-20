@@ -20,6 +20,7 @@ public:
     void check_equal(const std::string& a, const std::string& b);
     void check_equal(int a, int b);
     void check_equal(unsigned int a, unsigned int b);
+    void check_equal(double a, double b);
 
 private:
     std::string m_name;

@@ -42,3 +42,11 @@ void TestCase::check_equal(unsigned int a, unsigned int b)
         fail("expected " + itostr(b) + ", but got " + itostr(a));
     }
 }
+
+void TestCase::check_equal(double a, double b)
+{
+    if (!(a == b))
+    {
+        fail("expected " + ftostr(b) + ", but got " + ftostr(a));
+    }
+}

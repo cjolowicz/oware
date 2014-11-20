@@ -15,4 +15,13 @@ std::string itostr(unsigned char value);
 template<>
 std::string itostr(int value);
 
+template<typename T>
+std::string ftostr(T value);
+
+template<>
+std::string ftostr(float value);
+
+template<>
+std::string ftostr(double value);
+
 #endif

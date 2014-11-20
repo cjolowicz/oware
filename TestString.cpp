@@ -23,4 +23,9 @@ TESTSUITE(string)
         check_equal(itostr(-101), std::string("-101"));
         check_equal(itostr(-12345), std::string("-12345"));
     }
+
+    TESTCASE(ftostr)
+    {
+        check_equal(ftostr(0.1), std::string("0.1"));
+    }
 }
