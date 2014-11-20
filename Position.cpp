@@ -6,15 +6,21 @@ const count_t INITIAL_COUNT = 4;
 const count_t MAX_COUNT = 2 * (1+INDEX_6) * INITIAL_COUNT;
 const count_t WIN_COUNT = MAX_COUNT / 2 + 1;
 
-BoardSide::BoardSide()
-    : score(0)
+BoardSide::BoardSide(count_t i1,
+                     count_t i2,
+                     count_t i3,
+                     count_t i4,
+                     count_t i5,
+                     count_t i6,
+                     count_t score)
+    : score(score)
 {
-    fields[INDEX_1] = INITIAL_COUNT;
-    fields[INDEX_2] = INITIAL_COUNT;
-    fields[INDEX_3] = INITIAL_COUNT;
-    fields[INDEX_4] = INITIAL_COUNT;
-    fields[INDEX_5] = INITIAL_COUNT;
-    fields[INDEX_6] = INITIAL_COUNT;
+    fields[INDEX_1] = i1;
+    fields[INDEX_2] = i2;
+    fields[INDEX_3] = i3;
+    fields[INDEX_4] = i4;
+    fields[INDEX_5] = i5;
+    fields[INDEX_6] = i6;
 }
 
 void BoardSide::swap(BoardSide& other)
@@ -28,15 +34,33 @@ void BoardSide::swap(BoardSide& other)
     std::swap(fields[INDEX_6], other.fields[INDEX_6]);
 }
 
+Board::Board()
+    : a(),
+      b()
+{
+}
+
+Board::Board(BoardSide a, BoardSide b)
+    : a(a),
+      b(b)
+{
+}
+
 void Board::swap(Board& other)
 {
     a.swap(other.a);
     b.swap(other.b);
 }
 
-Position::Position()
-    : m_player(PLAYER_A),
-      m_board()
+Position::Position(Board board, Player player)
+    : m_player(player),
+      m_board(board)
+{
+}
+
+Position::Position(BoardSide a, BoardSide b, Player player)
+    : m_player(player),
+      m_board(a, b)
 {
 }
 

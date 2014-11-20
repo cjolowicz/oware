@@ -32,7 +32,13 @@ enum Index
 
 struct BoardSide
 {
-    BoardSide();
+    BoardSide(count_t i1 = INITIAL_COUNT,
+              count_t i2 = INITIAL_COUNT,
+              count_t i3 = INITIAL_COUNT,
+              count_t i4 = INITIAL_COUNT,
+              count_t i5 = INITIAL_COUNT,
+              count_t i6 = INITIAL_COUNT,
+              count_t score = 0);
 
     void swap(BoardSide& other);
 
@@ -42,6 +48,9 @@ struct BoardSide
 
 struct Board
 {
+    Board();
+    Board(BoardSide a, BoardSide b);
+
     void swap(Board& other);
 
     BoardSide a;
@@ -99,7 +108,12 @@ struct Field
 class Position
 {
 public:
-    Position();
+    explicit Position(Board board = Board(),
+                      Player player = PLAYER_A);
+
+    explicit Position(BoardSide a,
+                      BoardSide b,
+                      Player player = PLAYER_A);
 
     void swap(Position& other);
 

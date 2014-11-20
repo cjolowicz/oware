@@ -3,4 +3,10 @@
 
 TESTSUITE(engine)
 {
+    TESTCASE(evaluate)
+    {
+        Position position;
+
+        check_equal((int)evaluate(position), 0);
+    }
 }

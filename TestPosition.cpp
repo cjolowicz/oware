@@ -12,12 +12,12 @@ std::string to_string(const Position& position, Player player)
         = "{ "
         + to_string(player)
         + ", "
-        + itostr(position.score(PLAYER_A))
+        + itostr(position.score(player))
         + ", "
         + "{ ";
 
-    Field first = position.begin(PLAYER_A);
-    Field last = position.end(PLAYER_A);
+    Field first = position.begin(player);
+    Field last = position.end(player);
 
     while (first != last)
     {
@@ -50,12 +50,33 @@ std::string to_string(const Position& position)
 
 TESTSUITE(position)
 {
-    TESTCASE(ctor)
+    TESTCASE(default)
     {
         Position position;
 
         check_equal(to_string(position),
                     "{ A"
+                    ", { A, 0, { 4, 4, 4, 4, 4, 4 } }"
+                    ", { B, 0, { 4, 4, 4, 4, 4, 4 } } }");
+    }
+
+    TESTCASE(boardside)
+    {
+        Position position(BoardSide(0, 1, 2, 3, 4, 5),
+                          BoardSide(6, 7, 8, 9, 10, 11));
+
+        check_equal(to_string(position),
+                    "{ A"
+                    ", { A, 0, { 0, 1, 2, 3, 4, 5 } }"
+                    ", { B, 0, { 6, 7, 8, 9, 10, 11 } } }");
+    }
+
+    TESTCASE(player)
+    {
+        Position position(Board(), PLAYER_B);
+
+        check_equal(to_string(position),
+                    "{ B"
                     ", { A, 0, { 4, 4, 4, 4, 4, 4 } }"
                     ", { B, 0, { 4, 4, 4, 4, 4, 4 } } }");
     }
