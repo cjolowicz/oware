@@ -43,10 +43,10 @@ void TestCase::check_equal(unsigned int a, unsigned int b)
     }
 }
 
-void TestCase::check_equal(double a, double b)
+void TestCase::check_close(double a, double b, double eta)
 {
-    if (!(a == b))
+    if ((a > b ? a - b : b - a) > eta)
     {
-        fail("expected " + ftostr(b) + ", but got " + ftostr(a));
+        fail("expected " + ftostr(b) + " +- " + ftostr(eta) + ", but got " + ftostr(a));
     }
 }
