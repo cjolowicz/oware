@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-const unsigned int MAX_DEPTH = 9;
-
 void print(const Position& position)
 {
     printf("\n");
@@ -190,7 +188,7 @@ Position move_agent(const Position& position)
 
         if (next.second)
         {
-            float value = negamax(next.first, MAX_DEPTH);
+            float value = negamax(next.first);
 
             DEBUG("move #%d: %3.2f%%", (int)first.index+1, 100 * value);
 

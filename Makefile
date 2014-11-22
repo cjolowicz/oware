@@ -1,10 +1,12 @@
 HEADERS = Position.hpp Engine.hpp Driver.hpp Debug.hpp Singleton.hpp \
 	  Exception.hpp String.hpp
 OBJECTS = Position.o Engine.o Driver.o Exception.o String.o
+EXTRA_OBJECTS = main.o
 
 TEST_HEADERS = TestCase.hpp TestSuite.hpp TestRunner.hpp Test.hpp
 TEST_OBJECTS = TestCase.o TestSuite.o TestRunner.o
 TESTS = TestString TestPosition TestEngine
+EXTRA_TEST_OBJECTS = TestPosition.o TestEngine.o TestString.o
 
 CXXFLAGS += -Wall
 
@@ -52,4 +54,4 @@ test: $(TESTS)
 	done
 
 clean:
-	rm -f oware $(OBJECTS) $(TEST_OBJECTS) $(TESTS)
+	rm -f oware $(OBJECTS) $(TEST_OBJECTS) $(TESTS) $(EXTRA_OBJECTS) $(EXTRA_TEST_OBJECTS)

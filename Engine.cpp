@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <utility>
 
+const unsigned int DEFAULT_DEPTH = 9;
+
 float evaluate(const Position& position)
 {
     float win = 1.0 * position.score() / WIN_COUNT;

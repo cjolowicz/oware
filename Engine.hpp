@@ -3,7 +3,9 @@
 
 #include "Position.hpp"
 
+extern const unsigned int DEFAULT_DEPTH;
+
 float evaluate(const Position& position);
-float negamax(const Position& position, unsigned int depth);
+float negamax(const Position& position, unsigned int depth = DEFAULT_DEPTH);
 
 #endif

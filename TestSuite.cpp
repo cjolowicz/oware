@@ -2,13 +2,51 @@
 #include "TestRunner.hpp"
 #include "Exception.hpp"
 
+#include <algorithm>
+
 #include <stdio.h>
+
+struct TestSuite::Matcher
+{
+    Matcher(int argc, const char* argv[])
+        : args(&argv[1], &argv[argc])
+    {
+    }
+
+    bool operator()(const std::string& name) const
+    {
+        std::vector<std::string>::const_iterator arg;
+        for (arg = args.begin(); arg != args.end(); ++arg)
+        {
+            if (matches(name, *arg))
+            {
+                return true;
+            }
+        }
+
+        return args.empty();
+    }
+
+    bool matches(const std::string& name, const std::string& arg) const
+    {
+        return arg.size() <= name.size()
+            && std::search(name.begin(), name.end(), arg.begin(), arg.end())
+            != name.end();
+    }
+
+    std::vector<std::string> args;
+};
 
 TestSuite::TestSuite(const std::string& name)
     : m_name(name),
       m_testcases()
 {
     TestRunner::instance().add(*this);
+}
+
+const std::string& TestSuite::name() const
+{
+    return m_name;
 }
 
 void TestSuite::add(TestCase& testcase)
@@ -18,19 +56,26 @@ void TestSuite::add(TestCase& testcase)
 
 int TestSuite::run(int argc, const char* argv[])
 {
-    runTestCases();
+    Matcher match(argc, argv);
+
+    runTestCases(match);
 
     return 0;
 }
 
-void TestSuite::runTestCases()
+void TestSuite::runTestCases(const Matcher& match)
 {
     std::vector<TestCase*>::iterator testcase;
 
     for (testcase = m_testcases.begin();
          testcase != m_testcases.end(); ++testcase)
     {
-        runTestCase(**testcase);
+        std::string fqdn = name() + "." + (**testcase).name();
+
+        if (match(fqdn))
+        {
+            runTestCase(**testcase);
+        }
     }
 }
 
