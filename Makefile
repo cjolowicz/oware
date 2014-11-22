@@ -1,6 +1,6 @@
-HEADERS = Position.hpp Engine.hpp Driver.hpp Debug.hpp Singleton.hpp \
-	  Exception.hpp String.hpp
-OBJECTS = Position.o Engine.o Driver.o Exception.o String.o
+HEADERS = Board.hpp Position.hpp Engine.hpp Driver.hpp Debug.hpp \
+	  Singleton.hpp Exception.hpp String.hpp
+OBJECTS = Board.o Position.o Engine.o Driver.o Exception.o String.o
 EXTRA_OBJECTS = main.o
 
 TEST_HEADERS = TestCase.hpp TestSuite.hpp TestRunner.hpp Test.hpp
@@ -13,6 +13,8 @@ CXXFLAGS += -Wall
 all: oware $(TESTS)
 
 main.o: main.cpp $(HEADERS)
+
+Board.o: Board.cpp $(HEADERS)
 
 Position.o: Position.cpp $(HEADERS)
 
