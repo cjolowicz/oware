@@ -1,4 +1,4 @@
-#include "TestSuite.hpp"
+#include "Test.hpp"
 #include "String.hpp"
 
 TESTSUITE(string)

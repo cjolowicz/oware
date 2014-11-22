@@ -26,23 +26,4 @@ private:
     std::string m_name;
 };
 
-#define TESTCASE_CLASS(name) TestCase_##name
-
-#define DECLARE_TESTCASE(name)                          \
-    class TESTCASE_CLASS(name) : public TestCase        \
-    {                                                   \
-    public:                                             \
-        TESTCASE_CLASS(name)();                         \
-                                                        \
-        virtual void run();                             \
-    }
-
-#define DEFINE_TESTCASE(name)                           \
-    TESTCASE_CLASS(name)::TESTCASE_CLASS(name)()        \
-        : TestCase(#name)                               \
-    {                                                   \
-    }                                                   \
-                                                        \
-    void TESTCASE_CLASS(name)::run()
-
 #endif

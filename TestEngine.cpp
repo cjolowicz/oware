@@ -1,4 +1,4 @@
-#include "TestSuite.hpp"
+#include "Test.hpp"
 #include "Engine.hpp"
 
 TESTSUITE(engine)

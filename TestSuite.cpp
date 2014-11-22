@@ -1,38 +1,24 @@
 #include "TestSuite.hpp"
+#include "TestRunner.hpp"
 #include "Exception.hpp"
 
 #include <stdio.h>
 
-TestSuite::TestSuite()
-    : m_name(),
+TestSuite::TestSuite(const std::string& name)
+    : m_name(name),
       m_testcases()
 {
+    TestRunner::instance().add(*this);
 }
 
-TestSuite::~TestSuite()
+void TestSuite::add(TestCase& testcase)
 {
-    std::vector<TestCase*>::iterator testcase;
-
-    for (testcase = m_testcases.begin();
-         testcase != m_testcases.end(); ++testcase)
-    {
-        delete *testcase;
-    }
-}
-
-void TestSuite::setName(const std::string& name)
-{
-    instance().m_name = name;
-}
-
-void TestSuite::add(TestCase* testcase)
-{
-    instance().m_testcases.push_back(testcase);
+    m_testcases.push_back(&testcase);
 }
 
 int TestSuite::run(int argc, const char* argv[])
 {
-    instance().runTestCases();
+    runTestCases();
 
     return 0;
 }

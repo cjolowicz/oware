@@ -1,4 +1,4 @@
-#include "TestSuite.hpp"
+#include "Test.hpp"
 #include "Position.hpp"
 
 std::string to_string(Player player)

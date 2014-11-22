@@ -2,8 +2,8 @@ HEADERS = Position.hpp Engine.hpp Driver.hpp Debug.hpp Singleton.hpp \
 	  Exception.hpp String.hpp
 OBJECTS = Position.o Engine.o Driver.o Exception.o String.o
 
-TEST_HEADERS = TestCase.hpp TestSuite.hpp
-TEST_OBJECTS = TestCase.o TestSuite.o
+TEST_HEADERS = TestCase.hpp TestSuite.hpp TestRunner.hpp Test.hpp
+TEST_OBJECTS = TestCase.o TestSuite.o TestRunner.o
 TESTS = TestString TestPosition TestEngine
 
 CXXFLAGS += -Wall
@@ -25,6 +25,8 @@ String.o: String.cpp $(HEADERS)
 TestCase.o: TestCase.cpp $(TEST_HEADERS) $(HEADERS)
 
 TestSuite.o: TestSuite.cpp $(TEST_HEADERS) $(HEADERS)
+
+TestRunner.o: TestRunner.cpp $(TEST_HEADERS) $(HEADERS)
 
 oware: main.o $(OBJECTS)
 	$(CXX) -o $@ main.o $(OBJECTS)
