@@ -6,7 +6,6 @@
 #define DEBUG(...)                              \
     do                                          \
     {                                           \
-        fprintf(stderr, "[DEBUG] ");            \
         fprintf(stderr, __VA_ARGS__);           \
         fprintf(stderr, "\n");                  \
         fflush(stderr);                         \
