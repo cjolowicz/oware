@@ -71,7 +71,7 @@ bool Position::move_unsafe(Field field)
         }
     }
 
-    Board previous = m_board;
+    Position previous = *this;
 
     while (field.player == opponent())
     {
@@ -90,7 +90,12 @@ bool Position::move_unsafe(Field field)
 
     if (total(opponent()) == 0)
     {
-        m_board.swap(previous);
+        if (previous.total(opponent()) == 0)
+        {
+            return false;
+        }
+
+        swap(previous);
     }
 
     m_player = opponent();
@@ -107,7 +112,7 @@ void Position::finish_unsafe()
     {
         count_t& content = count(field);
 
-        score(opponent_of(field.player)) += content;
+        score(field.player) += content;
 
         content = 0;
 
