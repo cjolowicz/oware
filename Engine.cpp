@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <utility>
 
-const unsigned int DEFAULT_DEPTH = 10;
+const unsigned int DEFAULT_DEPTH = 9;
 
 float evaluate(const Position& position)
 {
