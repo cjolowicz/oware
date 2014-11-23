@@ -164,9 +164,3 @@ Position move_human(const Position& position)
 
     return next.first;
 }
-
-Position move_agent(const Position& position)
-{
-    Engine engine;
-    return engine.move(position);
-}

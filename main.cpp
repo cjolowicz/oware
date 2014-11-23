@@ -1,4 +1,5 @@
 #include "Driver.hpp"
+#include "Engine.hpp"
 
 #include <string>
 #include <stdlib.h>
@@ -7,6 +8,7 @@ void human_vs_agent(Player human)
 {
     system("clear");
 
+    Engine engine;
     Position position;
 
     do
@@ -24,7 +26,7 @@ void human_vs_agent(Player human)
         }
         else
         {
-            position = move_agent(position);
+            position = engine.move(position);
         }
     }
     while (!position.is_terminal());
@@ -51,13 +53,14 @@ void human_vs_human()
 
 void agent_vs_agent()
 {
+    Engine engine;
     Position position;
 
     do
     {
         print(position);
 
-        position = move_agent(position);
+        position = engine.move(position);
     }
     while (!position.is_terminal());
 
