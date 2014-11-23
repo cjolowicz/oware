@@ -6,7 +6,7 @@
 #include <utility>
 #include <map>
 
-#define DEBUG_POSITION(position, best, move)                    \
+#define DEBUG_MOVE(position, best, move)                        \
     DEBUG("%c:%d "                                              \
           "[ %2d %2d %2d %2d %2d %2d  "                         \
           "| %2d %2d %2d %2d %2d %2d  ] "                       \
@@ -48,7 +48,7 @@ Position Engine::move(const Position& position)
         {
             float value = negamax(next.first);
 
-            DEBUG_POSITION(next.first, value, (int)(first.index+1));
+            DEBUG_MOVE(next.first, value, (int)(first.index+1));
 
             if (value > best.second)
             {
