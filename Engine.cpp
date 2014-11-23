@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 #include "Driver.hpp"
+#include "Exception.hpp"
 #include "Debug.hpp"
 
 #include <algorithm>
@@ -50,6 +51,148 @@ bool Engine::Cache::lookup(const Position& position,
     if (result.second || result.first->second.depth < depth)
     {
         result.first->second = entry.second;
+
+        return false;
+    }
+
+    return true;
+}
+
+const std::string Engine::FileCache::DEFAULT_FILENAME("cache.dat");
+
+Engine::FileCache::FileCache(const std::string& filename)
+    : m_filename(filename)
+{
+    try
+    {
+        deserialize();
+    }
+    catch (const Exception& exception)
+    {
+        DEBUG("%s", exception.what());
+    }
+    catch (...)
+    {
+    }
+}
+
+Engine::FileCache::~FileCache()
+{
+    try
+    {
+        serialize();
+    }
+    catch (const Exception& exception)
+    {
+        DEBUG("%s", exception.what());
+    }
+    catch (...)
+    {
+    }
+}
+
+void Engine::FileCache::serialize()
+{
+    FILE* file = fopen(m_filename.c_str(), "w");
+
+    if (file == 0)
+    {
+        throw Exception("cannot open " + m_filename + " for writing", FILELINE);
+    }
+
+    serialize(file);
+
+    if (fclose(file) < 0)
+    {
+        throw Exception("cannot close " + m_filename + " after writing", FILELINE);
+    }
+}
+
+void Engine::FileCache::serialize(FILE* file)
+{
+    const_iterator entry;
+    for (entry = m_entries.begin();
+         entry != m_entries.end(); ++entry)
+    {
+        serialize(file, entry->first, entry->second);
+    }
+}
+
+void Engine::FileCache::serialize(FILE* file,
+                                  const Position& position,
+                                  const Entry& entry)
+{
+    char buffer[1024];
+
+    // TODO: serialize into buffer
+
+    serialize(file, buffer, sizeof(buffer));
+}
+
+void Engine::FileCache::serialize(FILE* file,
+                                  const char* buffer,
+                                  size_t bufferSize)
+{
+    if (fwrite(buffer, bufferSize, 1, file) == 0)
+    {
+        throw Exception("cannot write to " + m_filename, FILELINE);
+    }
+}
+
+void Engine::FileCache::deserialize()
+{
+    FILE* file = fopen(m_filename.c_str(), "r");
+
+    if (file == 0)
+    {
+        throw Exception("cannot open " + m_filename + " for reading", FILELINE);
+    }
+
+    deserialize(file);
+
+    if (fclose(file) < 0)
+    {
+        throw Exception("cannot close " + m_filename + " after reading", FILELINE);
+    }
+}
+
+void Engine::FileCache::deserialize(FILE* file)
+{
+    Position position;
+    Entry entry;
+
+    while (deserialize(file, position, entry))
+    {
+        m_entries.insert(value_type(position, entry));
+    }
+}
+
+bool Engine::FileCache::deserialize(FILE* file,
+                                    Position& position,
+                                    Entry& entry)
+{
+    char buffer[1024];
+
+    if (deserialize(file, buffer, sizeof(buffer)))
+    {
+        // TODO: deserialize from buffer
+
+        return true;
+    }
+
+    return false;
+}
+
+bool Engine::FileCache::deserialize(FILE* file,
+                                    char* buffer,
+                                    size_t bufferSize)
+{
+    if (fread(buffer, bufferSize, 1, file) == 0)
+    {
+        if (ferror(file))
+        {
+            throw Exception("cannot read from " + m_filename, FILELINE);
+        }
 
         return false;
     }
