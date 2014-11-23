@@ -6,30 +6,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define DEBUG_POSITION(position, best, move)                    \
-    DEBUG("%c:%d "                                              \
-          "[ %2d %2d %2d %2d %2d %2d  "                         \
-          "| %2d %2d %2d %2d %2d %2d  ] "                       \
-          "[ %2d %2d  ] "                                       \
-          "%5g",                                                \
-          position.player() == PLAYER_B ? 'A' : 'B',            \
-          move,                                                 \
-          (int)position.count(Field(PLAYER_A, INDEX_1)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_2)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_3)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_4)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_5)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_6)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_1)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_2)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_3)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_4)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_5)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_6)),        \
-          (int)position.score(PLAYER_A),                        \
-          (int)position.score(PLAYER_B),                        \
-          (double)best)
-
 void print(const Position& position)
 {
     printf("\n");
@@ -118,13 +94,6 @@ void print(const Position& position)
     fflush(stdout);
 }
 
-void print_move(Field move)
-{
-    printf("[%s] Move: %d\n",
-           move.player == PLAYER_A ? "A" : "B",
-           (int)move.index+1);
-}
-
 std::pair<Position, bool> read_move(const Position& position)
 {
     while (true)
@@ -199,41 +168,5 @@ Position move_human(const Position& position)
 Position move_agent(const Position& position)
 {
     Engine engine;
-
-    Field first = position.begin();
-    Field last = position.end();
-
-    std::pair<Position, float> best(position, -1.0);
-    Field move;
-
-    while (first != last)
-    {
-        std::pair<Position, bool> next = position.move(first);
-
-        if (next.second)
-        {
-            float value = engine.negamax(next.first);
-
-            DEBUG_POSITION(next.first, value, (int)(first.index+1));
-
-            if (value > best.second)
-            {
-                best.first = next.first;
-                best.second = value;
-
-                move = first;
-            }
-        }
-
-        first.next();
-    }
-
-    if (best.second == -1.0)
-    {
-        return position.finish();
-    }
-
-    print_move(move);
-
-    return best.first;
+    return engine.move(position);
 }
