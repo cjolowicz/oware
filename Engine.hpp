@@ -3,9 +3,13 @@
 
 #include "Position.hpp"
 
-extern const unsigned int DEFAULT_DEPTH;
+class Engine
+{
+public:
+    static const unsigned int DEFAULT_DEPTH;
 
-float evaluate(const Position& position);
-float negamax(const Position& position, unsigned int depth = DEFAULT_DEPTH);
+    float negamax(const Position& position, unsigned int depth = DEFAULT_DEPTH);
+    float evaluate(const Position& position);
+};
 
 #endif

@@ -1,11 +1,13 @@
 #include "Engine.hpp"
 #include "Driver.hpp"
+
 #include <algorithm>
 #include <utility>
+#include <map>
 
-const unsigned int DEFAULT_DEPTH = 9;
+const unsigned int Engine::DEFAULT_DEPTH = 9;
 
-float evaluate(const Position& position)
+float Engine::evaluate(const Position& position)
 {
     float win = 1.0 * position.score() / WIN_COUNT;
 
@@ -24,7 +26,7 @@ float evaluate(const Position& position)
     return win + defeat;
 }
 
-float negamax(const Position& position, unsigned int depth)
+float Engine::negamax(const Position& position, unsigned int depth)
 {
     if (depth == 0 || position.is_terminal())
     {

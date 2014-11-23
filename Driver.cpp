@@ -198,6 +198,8 @@ Position move_human(const Position& position)
 
 Position move_agent(const Position& position)
 {
+    Engine engine;
+
     Field first = position.begin();
     Field last = position.end();
 
@@ -210,7 +212,7 @@ Position move_agent(const Position& position)
 
         if (next.second)
         {
-            float value = negamax(next.first);
+            float value = engine.negamax(next.first);
 
             DEBUG_POSITION(next.first, value, (int)(first.index+1));
 
