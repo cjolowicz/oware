@@ -6,6 +6,30 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#define DEBUG_POSITION(position, best, move)                    \
+    DEBUG("%c:%d "                                              \
+          "[ %2d %2d %2d %2d %2d %2d  "                         \
+          "| %2d %2d %2d %2d %2d %2d  ] "                       \
+          "[ %2d %2d  ] "                                       \
+          "%5g",                                                \
+          position.player() == PLAYER_B ? 'A' : 'B',            \
+          move,                                                 \
+          (int)position.count(Field(PLAYER_A, INDEX_1)),        \
+          (int)position.count(Field(PLAYER_A, INDEX_2)),        \
+          (int)position.count(Field(PLAYER_A, INDEX_3)),        \
+          (int)position.count(Field(PLAYER_A, INDEX_4)),        \
+          (int)position.count(Field(PLAYER_A, INDEX_5)),        \
+          (int)position.count(Field(PLAYER_A, INDEX_6)),        \
+          (int)position.count(Field(PLAYER_B, INDEX_1)),        \
+          (int)position.count(Field(PLAYER_B, INDEX_2)),        \
+          (int)position.count(Field(PLAYER_B, INDEX_3)),        \
+          (int)position.count(Field(PLAYER_B, INDEX_4)),        \
+          (int)position.count(Field(PLAYER_B, INDEX_5)),        \
+          (int)position.count(Field(PLAYER_B, INDEX_6)),        \
+          (int)position.score(PLAYER_A),                        \
+          (int)position.score(PLAYER_B),                        \
+          (double)best)
+
 void print(const Position& position)
 {
     printf("\n");
@@ -174,8 +198,6 @@ Position move_human(const Position& position)
 
 Position move_agent(const Position& position)
 {
-    DEBUG("current: %3.2f%%", 100 * evaluate(position));
-
     Field first = position.begin();
     Field last = position.end();
 
@@ -190,7 +212,7 @@ Position move_agent(const Position& position)
         {
             float value = negamax(next.first);
 
-            DEBUG("move #%d: %3.2f%%", (int)first.index+1, 100 * value);
+            DEBUG_POSITION(next.first, value, (int)(first.index+1));
 
             if (value > best.second)
             {

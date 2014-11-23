@@ -1,10 +1,9 @@
 #include "Engine.hpp"
 #include "Driver.hpp"
-
 #include <algorithm>
 #include <utility>
 
-const unsigned int DEFAULT_DEPTH = 9;
+const unsigned int DEFAULT_DEPTH = 10;
 
 float evaluate(const Position& position)
 {
