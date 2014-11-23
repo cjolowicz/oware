@@ -50,6 +50,9 @@ TestEngine.o: TestEngine.cpp $(TEST_HEADERS) $(HEADERS)
 TestEngine: TestEngine.o $(TEST_OBJECTS) $(OBJECTS)
 	$(CXX) -o $@ TestEngine.o $(TEST_OBJECTS) $(OBJECTS)
 
+run: oware
+	./oware <<<B
+
 test: $(TESTS)
 	@for test in $(TESTS) ; do \
 	  ./$$test; \
