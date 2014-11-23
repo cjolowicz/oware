@@ -44,4 +44,31 @@ struct Board
     BoardSide b;
 };
 
+inline
+int compare(const BoardSide& a, const BoardSide& b)
+{
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        if (a.fields[i] < b.fields[i])
+        {
+            return -1;
+        }
+
+        if (a.fields[i] > b.fields[i])
+        {
+            return 1;
+        }
+    }
+
+    return static_cast<int>(a.score) - b.score;
+}
+
+inline
+int compare(const Board& a, const Board& b)
+{
+    int rv = compare(a.a, b.a);
+
+    return rv != 0 ? rv : compare(a.b, b.b);
+}
+
 #endif

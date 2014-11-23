@@ -32,6 +32,31 @@
 
 const unsigned int Engine::DEFAULT_DEPTH = 9;
 
+Engine::Cache::Entry::Entry(unsigned int depth, float value)
+    : depth(depth), value(value)
+{
+}
+
+bool Engine::Cache::lookup(const Position& position,
+                           unsigned int depth,
+                           float** value)
+{
+    value_type entry(position, Entry(depth, -1));
+
+    std::pair<iterator, bool> result = m_entries.insert(entry);
+
+    *value = &result.first->second.value;
+
+    if (result.second || result.first->second.depth < depth)
+    {
+        result.first->second = entry.second;
+
+        return false;
+    }
+
+    return true;
+}
+
 Position Engine::move(const Position& position)
 {
     Field first = position.begin();
@@ -91,14 +116,19 @@ float Engine::evaluate(const Position& position)
 
 float Engine::negamax(const Position& position, unsigned int depth)
 {
+    float* best;
+
+    if (m_cache.lookup(position, depth, &best))
+    {
+        return *best;
+    }
+
     if (depth == 0 || position.is_terminal())
     {
-        return evaluate(position);
+        return *best = evaluate(position);
     }
 
     bool can_move = false;
-
-    float best = -1.0;
 
     Field first = position.begin();
     Field last = position.end();
@@ -109,7 +139,7 @@ float Engine::negamax(const Position& position, unsigned int depth)
 
         if (next.second)
         {
-            best = std::max(best, -negamax(next.first, depth-1));
+            *best = std::max(*best, -negamax(next.first, depth-1));
 
             can_move = true;
         }
@@ -121,8 +151,8 @@ float Engine::negamax(const Position& position, unsigned int depth)
     {
         Position next = position.finish();
 
-        return -negamax(next, depth-1);
+        *best = -negamax(next, depth-1);
     }
 
-    return best;
+    return *best;
 }

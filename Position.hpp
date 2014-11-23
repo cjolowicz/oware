@@ -80,6 +80,11 @@ public:
 
     bool is_terminal() const;
 
+    const Board& board() const
+    {
+        return m_board;
+    }
+
     Player player() const
     {
         return m_player;
@@ -192,5 +197,17 @@ private:
     Player m_player;
     Board m_board;
 };
+
+inline int compare(const Position& a, const Position& b)
+{
+    int rv = static_cast<int>(a.player()) - static_cast<int>(b.player());
+
+    return rv != 0 ? rv : compare(a.board(), b.board());
+}
+
+inline bool operator<(const Position& a, const Position& b)
+{
+    return compare(a, b) < 0;
+}
 
 #endif
