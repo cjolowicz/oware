@@ -1,4 +1,5 @@
 #include "Position.hpp"
+#include "Assert.hpp"
 
 #include <algorithm>
 
@@ -6,12 +7,22 @@ Position::Position(Board board, Player player)
     : m_player(player),
       m_board(board)
 {
+    ASSERT(MAX_COUNT ==
+           total(PLAYER_A) +
+           total(PLAYER_B) +
+           score(PLAYER_A) +
+           score(PLAYER_B));
 }
 
 Position::Position(BoardSide a, BoardSide b, Player player)
     : m_player(player),
       m_board(a, b)
 {
+    ASSERT(MAX_COUNT ==
+           total(PLAYER_A) +
+           total(PLAYER_B) +
+           score(PLAYER_A) +
+           score(PLAYER_B));
 }
 
 void Position::swap(Position& other)

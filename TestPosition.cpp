@@ -62,13 +62,13 @@ TESTSUITE(position)
 
     TESTCASE(boardside)
     {
-        Position position(BoardSide(0, 1, 2, 3, 4, 5),
-                          BoardSide(6, 7, 8, 9, 10, 11));
+        Position position(BoardSide(0, 1, 2, 3, 4, 5, 9),
+                          BoardSide(0, 1, 2, 3, 4, 5, 9));
 
         check_equal(to_string(position),
                     "{ A"
-                    ", { A, 0, { 0, 1, 2, 3, 4, 5 } }"
-                    ", { B, 0, { 6, 7, 8, 9, 10, 11 } } }");
+                    ", { A, 9, { 0, 1, 2, 3, 4, 5 } }"
+                    ", { B, 9, { 0, 1, 2, 3, 4, 5 } } }");
     }
 
     TESTCASE(player)

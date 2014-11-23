@@ -1,5 +1,5 @@
 HEADERS = Board.hpp Position.hpp Engine.hpp Driver.hpp Debug.hpp \
-	  Singleton.hpp Exception.hpp String.hpp
+	  Singleton.hpp Exception.hpp Assert.hpp String.hpp
 OBJECTS = Board.o Position.o Engine.o Driver.o Exception.o String.o
 EXTRA_OBJECTS = main.o
 

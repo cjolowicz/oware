@@ -4,6 +4,7 @@
 typedef unsigned char count_t; // 0 to 48
 
 extern const count_t INITIAL_COUNT;
+extern const count_t MAX_COUNT;
 extern const count_t WIN_COUNT;
 
 enum Index
