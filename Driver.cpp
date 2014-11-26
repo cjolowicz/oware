@@ -1,129 +1,17 @@
 #include "Driver.hpp"
+#include "Human.hpp"
 #include "Engine.hpp"
-#include "Debug.hpp"
+#include "Exception.hpp"
 
-#include <stdio.h>
+#include <string>
 #include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 
-void print(const Position& position)
+namespace
 {
-    printf("\n");
 
-    Field first;
-    Field last;
-
-    first = position.end();
-    last = position.begin();
-
-    do
-    {
-        first.previous();
-
-        printf("%3d", (int)first.index+1);
-    }
-    while (first != last);
-
-    printf("\n");
-
-    first = position.begin();
-    last = position.end();
-
-    while (first != last)
-    {
-        printf("---");
-
-        first.next();
-    }
-
-    printf("---\n");
-
-    first = position.end(PLAYER_A);
-    last = position.begin(PLAYER_A);
-
-    do
-    {
-        first.previous();
-
-        printf("%3d", (int)position.count(first));
-    }
-    while (first != last);
-
-    printf(" [A] %2d%s\n",
-           position.score(PLAYER_A),
-           position.player() == PLAYER_A ? " *" : "  ");
-
-    first = position.begin(PLAYER_B);
-    last = position.end(PLAYER_B);
-
-    while (first != last)
-    {
-        printf("%3d", (int)position.count(first));
-
-        first.next();
-    }
-
-    printf(" [B] %2d%s\n",
-           position.score(PLAYER_B),
-           position.player() == PLAYER_B ? " *" : "  ");
-
-    first = position.begin();
-    last = position.end();
-
-    while (first != last)
-    {
-        printf("---");
-
-        first.next();
-    }
-
-    printf("---\n");
-
-    first = position.begin();
-    last = position.end();
-
-    while (first != last)
-    {
-        printf("%3d", (int)first.index+1);
-
-        first.next();
-    }
-
-    printf("\n");
-    printf("\n");
-    fflush(stdout);
-}
-
-std::pair<Position, bool> read_move(const Position& position)
-{
-    while (true)
-    {
-        printf("[%s] Move? ", position.player() == PLAYER_A ? "A" : "B");
-
-        int ch;
-
-        do
-        {
-            ch = getchar();
-        }
-        while (isspace(ch));
-
-        switch (ch)
-        {
-            case '1': return position.move(INDEX_1);
-            case '2': return position.move(INDEX_2);
-            case '3': return position.move(INDEX_3);
-            case '4': return position.move(INDEX_4);
-            case '5': return position.move(INDEX_5);
-            case '6': return position.move(INDEX_6);
-            case EOF:
-                printf("\n");
-                exit(0);
-        }
-    }
-}
-
-Player read_player()
+Player ask_player()
 {
     while (true)
     {
@@ -143,24 +31,130 @@ Player read_player()
             case 'B': case 'b': return PLAYER_B;
             case EOF:
                 printf("\n");
-                exit(0);
+                throw SystemExit();
         }
     }
 }
 
-Position move_human(const Position& position)
+void print_position(const Position& position)
 {
-    if (!position.has_move())
+    fprintf(stdout,
+            "   "
+            "[ %2d %2d %2d %2d %2d %2d  "
+            "| %2d %2d %2d %2d %2d %2d  ] "
+            "%2d  - %2d\n",
+            (int)position.count(Field(PLAYER_A, INDEX_1)),
+            (int)position.count(Field(PLAYER_A, INDEX_2)),
+            (int)position.count(Field(PLAYER_A, INDEX_3)),
+            (int)position.count(Field(PLAYER_A, INDEX_4)),
+            (int)position.count(Field(PLAYER_A, INDEX_5)),
+            (int)position.count(Field(PLAYER_A, INDEX_6)),
+            (int)position.count(Field(PLAYER_B, INDEX_1)),
+            (int)position.count(Field(PLAYER_B, INDEX_2)),
+            (int)position.count(Field(PLAYER_B, INDEX_3)),
+            (int)position.count(Field(PLAYER_B, INDEX_4)),
+            (int)position.count(Field(PLAYER_B, INDEX_5)),
+            (int)position.count(Field(PLAYER_B, INDEX_6)),
+            (int)position.score(PLAYER_A),
+            (int)position.score(PLAYER_B));
+}
+
+void print_move(const Position& position, Field move)
+{
+    fprintf(stdout,
+            "%c%d "
+            "[ %2d %2d %2d %2d %2d %2d  "
+            "| %2d %2d %2d %2d %2d %2d  ] "
+            "%2d  - %2d\n",
+            move.player == PLAYER_A ? 'A' : 'B',
+            (int)move.index+1,
+            (int)position.count(Field(PLAYER_A, INDEX_1)),
+            (int)position.count(Field(PLAYER_A, INDEX_2)),
+            (int)position.count(Field(PLAYER_A, INDEX_3)),
+            (int)position.count(Field(PLAYER_A, INDEX_4)),
+            (int)position.count(Field(PLAYER_A, INDEX_5)),
+            (int)position.count(Field(PLAYER_A, INDEX_6)),
+            (int)position.count(Field(PLAYER_B, INDEX_1)),
+            (int)position.count(Field(PLAYER_B, INDEX_2)),
+            (int)position.count(Field(PLAYER_B, INDEX_3)),
+            (int)position.count(Field(PLAYER_B, INDEX_4)),
+            (int)position.count(Field(PLAYER_B, INDEX_5)),
+            (int)position.count(Field(PLAYER_B, INDEX_6)),
+            (int)position.score(PLAYER_A),
+            (int)position.score(PLAYER_B));
+}
+
+} // namespace
+
+Mode toMode(const std::string& rep)
+{
+    if (rep == "hh")
     {
-        return position.finish();
+        return HUMAN_VS_HUMAN;
     }
-
-    std::pair<Position, bool> next;
-
-    while (!next.second)
+    else if (rep == "ha" || rep == "ah")
     {
-        next = read_move(position);
+        return HUMAN_VS_ENGINE;
     }
+    else if (rep == "aa")
+    {
+        return ENGINE_VS_ENGINE;
+    }
+    else
+    {
+        throw Exception("invalid argument ", FILELINE);
+    }
+}
 
-    return next.first;
+void play(Mode mode)
+{
+    switch (mode)
+    {
+        case HUMAN_VS_HUMAN:
+            {
+                Human human;
+                play(human, human);
+            }
+            break;
+
+        case HUMAN_VS_ENGINE:
+            {
+                Human human;
+                Engine engine;
+
+                if (ask_player() == PLAYER_A)
+                {
+                    play(human, engine);
+                }
+                else
+                {
+                    play(engine, human);
+                }
+            }
+            break;
+
+        case ENGINE_VS_ENGINE:
+            {
+                Engine engine;
+                play(engine, engine);
+            }
+            break;
+    }
+}
+
+void play(Agent& a, Agent& b)
+{
+    Position position;
+
+    print_position(position);
+
+    while (!position.is_terminal())
+    {
+        Field move;
+        position = position.player() == PLAYER_A
+            ? a.move(position, move)
+            : b.move(position, move);
+
+        print_move(position, move);
+    }
 }

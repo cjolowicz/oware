@@ -1,6 +1,8 @@
-HEADERS = Board.hpp Position.hpp Engine.hpp Driver.hpp Debug.hpp \
-	  Singleton.hpp Exception.hpp Assert.hpp String.hpp
-OBJECTS = Board.o Position.o Engine.o Driver.o Exception.o String.o
+HEADERS = Board.hpp Position.hpp Engine.hpp Agent.hpp Human.hpp \
+	  Driver.hpp Debug.hpp Singleton.hpp Exception.hpp Assert.hpp \
+          String.hpp
+OBJECTS = Board.o Position.o Engine.o Human.o Driver.o Exception.o \
+          String.o
 EXTRA_OBJECTS = main.o
 
 TEST_HEADERS = TestCase.hpp TestSuite.hpp TestRunner.hpp Test.hpp
@@ -21,6 +23,8 @@ Position.o: Position.cpp $(HEADERS)
 Engine.o: Engine.cpp $(HEADERS)
 
 Driver.o: Driver.cpp $(HEADERS)
+
+Human.o: Human.cpp $(HEADERS)
 
 Exception.o: Exception.cpp $(HEADERS)
 

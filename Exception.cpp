@@ -22,3 +22,7 @@ const char* Exception::what() const throw()
     return m_what.c_str();
 }
 
+SystemExit::SystemExit()
+    : Exception("exit", FILELINE)
+{
+}

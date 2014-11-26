@@ -1,3 +1,4 @@
+#include "Debug.hpp"
 #include "Position.hpp"
 #include "Assert.hpp"
 

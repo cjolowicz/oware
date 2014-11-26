@@ -22,4 +22,9 @@ private:
 
 #define FILELINE __FILE__, __LINE__
 
+struct SystemExit : Exception
+{
+    SystemExit();
+};
+
 #endif

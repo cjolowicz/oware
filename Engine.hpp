@@ -1,19 +1,19 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "Position.hpp"
+#include "Agent.hpp"
 
 #include <map>
 #include <string>
 
 #include <stdio.h>
 
-class Engine
+class Engine : public Agent
 {
 public:
     static const unsigned int DEFAULT_DEPTH;
 
-    Position move(const Position& position);
+    virtual Position move(const Position& position, Field& move);
     float negamax(const Position& position, unsigned int depth = DEFAULT_DEPTH);
     float evaluate(const Position& position);
 
@@ -28,9 +28,9 @@ private:
     protected:
         struct Entry
         {
-            explicit Entry(unsigned int depth = 0, float value = 0.0);
+            explicit Entry(unsigned char depth = 0, float value = 0.0);
 
-            unsigned int depth;
+            unsigned char depth;
             float value;
         };
 
@@ -55,20 +55,10 @@ private:
         void deserialize();
 
         void serialize(FILE* file);
-        void serialize(FILE* file,
-                       const Position& position,
-                       const Entry& entry);
-        void serialize(FILE* file,
-                       const char* buffer,
-                       size_t bufferSize);
+        void serialize(FILE* file, const value_type& value);
 
         void deserialize(FILE* file);
-        bool deserialize(FILE* file,
-                         Position& position,
-                         Entry& entry);
-        bool deserialize(FILE* file,
-                         char* buffer,
-                         size_t bufferSize);
+        bool deserialize(FILE* file, value_type& value);
 
         std::string m_filename;
     };

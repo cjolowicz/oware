@@ -7,33 +7,43 @@
 #include <utility>
 #include <map>
 
-#define DEBUG_MOVE(position, best, move)                        \
-    DEBUG("%c:%d "                                              \
-          "[ %2d %2d %2d %2d %2d %2d  "                         \
-          "| %2d %2d %2d %2d %2d %2d  ] "                       \
-          "[ %2d %2d  ] "                                       \
-          "%5g",                                                \
-          position.player() == PLAYER_B ? 'A' : 'B',            \
-          move,                                                 \
-          (int)position.count(Field(PLAYER_A, INDEX_1)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_2)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_3)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_4)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_5)),        \
-          (int)position.count(Field(PLAYER_A, INDEX_6)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_1)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_2)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_3)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_4)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_5)),        \
-          (int)position.count(Field(PLAYER_B, INDEX_6)),        \
-          (int)position.score(PLAYER_A),                        \
-          (int)position.score(PLAYER_B),                        \
-          (double)best)
+namespace
+{
 
-const unsigned int Engine::DEFAULT_DEPTH = 9;
+void print_estimate(const Position& position, Field move, float best)
+{
+#ifdef DEBUG_ENGINE
+    fprintf(stdout,
+            ">%c%d "
+            "[ %2d %2d %2d %2d %2d %2d  "
+            "| %2d %2d %2d %2d %2d %2d  ] "
+            "%2d  - %2d "
+            "%5g\n",
+            move.player == PLAYER_A ? 'A' : 'B',
+            (int)move.index+1,
+            (int)position.count(Field(PLAYER_A, INDEX_1)),
+            (int)position.count(Field(PLAYER_A, INDEX_2)),
+            (int)position.count(Field(PLAYER_A, INDEX_3)),
+            (int)position.count(Field(PLAYER_A, INDEX_4)),
+            (int)position.count(Field(PLAYER_A, INDEX_5)),
+            (int)position.count(Field(PLAYER_A, INDEX_6)),
+            (int)position.count(Field(PLAYER_B, INDEX_1)),
+            (int)position.count(Field(PLAYER_B, INDEX_2)),
+            (int)position.count(Field(PLAYER_B, INDEX_3)),
+            (int)position.count(Field(PLAYER_B, INDEX_4)),
+            (int)position.count(Field(PLAYER_B, INDEX_5)),
+            (int)position.count(Field(PLAYER_B, INDEX_6)),
+            (int)position.score(PLAYER_A),
+            (int)position.score(PLAYER_B),
+            (double)best);
+#endif
+}
 
-Engine::Cache::Entry::Entry(unsigned int depth, float value)
+} // namespace
+
+const unsigned int Engine::DEFAULT_DEPTH = 8;
+
+Engine::Cache::Entry::Entry(unsigned char depth, float value)
     : depth(depth), value(value)
 {
 }
@@ -42,7 +52,7 @@ bool Engine::Cache::lookup(const Position& position,
                            unsigned int depth,
                            float** value)
 {
-    value_type entry(position, Entry(depth, -1));
+    value_type entry(position, Entry(static_cast<unsigned char>(depth), -1));
 
     std::pair<iterator, bool> result = m_entries.insert(entry);
 
@@ -58,7 +68,7 @@ bool Engine::Cache::lookup(const Position& position,
     return true;
 }
 
-const std::string Engine::FileCache::DEFAULT_FILENAME("cache.dat");
+const std::string Engine::FileCache::DEFAULT_FILENAME("oware.cache");
 
 Engine::FileCache::FileCache(const std::string& filename)
     : m_filename(filename)
@@ -114,26 +124,13 @@ void Engine::FileCache::serialize(FILE* file)
     for (entry = m_entries.begin();
          entry != m_entries.end(); ++entry)
     {
-        serialize(file, entry->first, entry->second);
+        serialize(file, *entry);
     }
 }
 
-void Engine::FileCache::serialize(FILE* file,
-                                  const Position& position,
-                                  const Entry& entry)
+void Engine::FileCache::serialize(FILE* file, const value_type& value)
 {
-    char buffer[1024];
-
-    // TODO: serialize into buffer
-
-    serialize(file, buffer, sizeof(buffer));
-}
-
-void Engine::FileCache::serialize(FILE* file,
-                                  const char* buffer,
-                                  size_t bufferSize)
-{
-    if (fwrite(buffer, bufferSize, 1, file) == 0)
+    if (fwrite(&value, sizeof(value), 1, file) == 0)
     {
         throw Exception("cannot write to " + m_filename, FILELINE);
     }
@@ -141,6 +138,8 @@ void Engine::FileCache::serialize(FILE* file,
 
 void Engine::FileCache::deserialize()
 {
+    fprintf(stderr, "Loading cache...");
+
     FILE* file = fopen(m_filename.c_str(), "r");
 
     if (file == 0)
@@ -154,40 +153,23 @@ void Engine::FileCache::deserialize()
     {
         throw Exception("cannot close " + m_filename + " after reading", FILELINE);
     }
+
+    fprintf(stderr, " done.\n");
 }
 
 void Engine::FileCache::deserialize(FILE* file)
 {
-    Position position;
-    Entry entry;
+    value_type value;
 
-    while (deserialize(file, position, entry))
+    while (deserialize(file, value))
     {
-        m_entries.insert(value_type(position, entry));
+        m_entries.insert(value);
     }
 }
 
-bool Engine::FileCache::deserialize(FILE* file,
-                                    Position& position,
-                                    Entry& entry)
+bool Engine::FileCache::deserialize(FILE* file, value_type& value)
 {
-    char buffer[1024];
-
-    if (deserialize(file, buffer, sizeof(buffer)))
-    {
-        // TODO: deserialize from buffer
-
-        return true;
-    }
-
-    return false;
-}
-
-bool Engine::FileCache::deserialize(FILE* file,
-                                    char* buffer,
-                                    size_t bufferSize)
-{
-    if (fread(buffer, bufferSize, 1, file) == 0)
+    if (fread(&value, sizeof(value), 1, file) == 0)
     {
         if (ferror(file))
         {
@@ -200,13 +182,12 @@ bool Engine::FileCache::deserialize(FILE* file,
     return true;
 }
 
-Position Engine::move(const Position& position)
+Position Engine::move(const Position& position, Field& move)
 {
     Field first = position.begin();
     Field last = position.end();
 
     std::pair<Position, float> best(position, -1.0);
-    Field move;
 
     while (first != last)
     {
@@ -216,7 +197,7 @@ Position Engine::move(const Position& position)
         {
             float value = negamax(next.first);
 
-            DEBUG_MOVE(next.first, value, (int)(first.index+1));
+            print_estimate(next.first, first, value);
 
             if (value > best.second)
             {

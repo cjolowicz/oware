@@ -1,10 +1,20 @@
 #ifndef DRIVER_HPP
 #define DRIVER_HPP
 
-#include "Position.hpp"
+#include "Agent.hpp"
 
-Player read_player();
-void print(const Position& position);
-Position move_human(const Position& position);
+#include <string>
+
+enum Mode
+{
+    HUMAN_VS_HUMAN,
+    HUMAN_VS_ENGINE,
+    ENGINE_VS_ENGINE
+};
+
+Mode toMode(const std::string& rep);
+
+void play(Mode mode);
+void play(Agent& a, Agent& b);
 
 #endif
