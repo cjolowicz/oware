@@ -41,7 +41,7 @@ void print_estimate(const Position& position, Field move, float best)
 
 } // namespace
 
-const unsigned int Engine::DEFAULT_DEPTH = 8;
+const unsigned int Engine::DEFAULT_DEPTH = 16;
 
 Engine::Cache::Entry::Entry(unsigned char depth, float value)
     : depth(depth), value(value)
@@ -238,7 +238,7 @@ float Engine::evaluate(const Position& position)
     return win + defeat;
 }
 
-float Engine::negamax(const Position& position, unsigned int depth)
+float Engine::negamax(const Position& position, unsigned int depth, float alpha, float beta)
 {
     float* best;
 
@@ -263,9 +263,17 @@ float Engine::negamax(const Position& position, unsigned int depth)
 
         if (next.second)
         {
-            *best = std::max(*best, -negamax(next.first, depth-1));
+            float value = -negamax(next.first, depth-1, -beta, -alpha);
+
+            *best = std::max(*best, value);
+            alpha = std::max(alpha, value);
 
             can_move = true;
+
+            if (alpha >= beta)
+            {
+                break;
+            }
         }
 
         first.next();
@@ -276,6 +284,7 @@ float Engine::negamax(const Position& position, unsigned int depth)
         Position next = position.finish();
 
         *best = -negamax(next, depth-1);
+        alpha = std::max(alpha, *best);
     }
 
     return *best;

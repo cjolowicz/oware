@@ -14,7 +14,10 @@ public:
     static const unsigned int DEFAULT_DEPTH;
 
     virtual Position move(const Position& position, Field& move);
-    float negamax(const Position& position, unsigned int depth = DEFAULT_DEPTH);
+    float negamax(const Position& position,
+                  unsigned int depth = DEFAULT_DEPTH,
+                  float alpha = -1.0,
+                  float beta = 1.0);
     float evaluate(const Position& position);
 
 private:
